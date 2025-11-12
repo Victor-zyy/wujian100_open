@@ -15,7 +15,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 `define BANK2_ADDR_WORDS 16384 
 `define BANK2_DATA_WIDTH 32
 `define BANK2_ADDR_WIDTH_14
-module sms_bank_64k_top(
+// sms_bank_8k_top
+//module sms_bank_64k_top(
+module sms_bank_8k_top(
   big_endian_b,
   mem_haddr,
   mem_hclk,
@@ -76,7 +78,8 @@ wire    [1 :0]  mem_htrans;
 wire    [1 :0]  mem_htrans_deny;     
 wire    [31:0]  mem_hwdata;          
 wire            mem_hwrite;          
-wire    [15:0]  ram_addr;            
+//wire    [15:0]  ram_addr;
+wire    [12:0]  ram_addr;       
 wire    [31:0]  ram_rdata;           
 wire            ram_sel;             
 wire    [2 :0]  ram_size;            
@@ -185,6 +188,8 @@ sms_sram_bk2  x_sms_sram (
 );
 assign resp_cfg[3:0] = 4'b1000;
 endmodule
+
+
 `define RAM_USAGE
 module sms_sms_ahbs_bk2(
   ahbs_harb_hrdata,
@@ -226,7 +231,8 @@ input   [3 :0]  resp_cfg;
 output  [31:0]  ahbs_harb_hrdata;       
 output          ahbs_harb_hready;       
 output  [1 :0]  ahbs_harb_hresp;        
-output  [15:0]  ram_addr;               
+//output  [15:0]  ram_addr;
+output  [12:0]  ram_addr;               
 output          ram_idle;               
 output          ram_sel;                
 output  [2 :0]  ram_size;               
@@ -235,12 +241,14 @@ output          ram_write;
 reg             ahbs_harb_hready_s;     
 reg     [1 :0]  ahbs_harb_hresp;        
 reg             harb_ahbs_hsel_r;       
-reg     [15:0]  harb_xx_haddr_r;        
+//reg     [15:0]  harb_xx_haddr_r;
+reg     [12:0]  harb_xx_haddr_r;    
 reg     [2 :0]  harb_xx_hsize_r;        
 reg             read_after_write_access; 
 reg             rty_first;              
 reg             rty_flag;               
-reg     [15:0]  w_ram_addr_tmp;         
+//reg     [15:0]  w_ram_addr_tmp;
+reg     [12:0]  w_ram_addr_tmp;            
 reg             w_ram_sel_tmp;          
 reg     [2 :0]  w_ram_size_tmp;         
 reg             w_ram_write_tmp;        
@@ -260,11 +268,13 @@ wire            harb_xx_hwrite;
 wire            hready_s;               
 wire            i_sys_hclk;             
 wire            i_sys_rst_b;            
-wire    [15:0]  r_ram_addr;             
+//wire    [15:0]  r_ram_addr;
+wire    [12:0]  r_ram_addr;            
 wire            r_ram_sel;              
 wire    [2 :0]  r_ram_size;             
 wire            r_ram_write;            
-wire    [15:0]  ram_addr;               
+//wire    [15:0]  ram_addr; 
+wire    [12:0]  ram_addr;               
 wire            ram_idle;               
 wire    [31:0]  ram_rdata;              
 wire            ram_sel;                
@@ -275,12 +285,14 @@ wire    [31:0]  reg_slave_rdata;
 wire    [3 :0]  resp_cfg;               
 wire    [31:0]  slave_reg_wdata_t;      
 wire    [1 :0]  sms_resp;               
-wire    [15:0]  w_ram_addr;             
+//wire    [15:0]  w_ram_addr;
+wire    [12:0]  w_ram_addr;            
 wire            w_ram_sel;              
 wire    [2 :0]  w_ram_size;             
 wire            w_ram_write;            
 parameter        REG_NUM = 64;
-parameter        BIT_WIDTH = 16;
+//parameter        BIT_WIDTH = 16;
+parameter        BIT_WIDTH = 13;
 parameter                 NONSEQ  = 2'b10;
 parameter                 SEQ     = 2'b11;
 parameter[2:0]   BYTE      = 3'b000, 
@@ -524,7 +536,8 @@ module sms_sram_bk2(
   ram_write
 );
 input           hrst_b;     
-input   [15:0]  ram_addr;   
+//input   [15:0]  ram_addr;
+input   [12:0]  ram_addr; 
 input           ram_clk;    
 input           ram_sel;    
 input   [2 :0]  ram_size;   
@@ -539,7 +552,8 @@ wire            hrst_b;
 wire            mbk_cen_b;  
 wire            mbk_wen_b;  
 wire    [31:0]  ram0_rdata; 
-wire    [15:0]  ram_addr;   
+//wire    [15:0]  ram_addr;
+wire    [12:0]  ram_addr;   
 wire            ram_clk;    
 wire            ram_sel;    
 wire    [2 :0]  ram_size;   
@@ -596,12 +610,14 @@ begin
   endcase
 end
 parameter  DATAWIDTH = 32;
-parameter  ADDRWIDTH = 14;
+//parameter  ADDRWIDTH = 14;  //64Byte
+parameter  ADDRWIDTH = 11;    //8KByte
 parameter  MEMDEPTH  = 2**(ADDRWIDTH);
 assign byte_wen_b[3:0] =  byte_sel_b[3:0] | {4{mbk_wen_b}};
 fpga_spram #(DATAWIDTH,ADDRWIDTH,MEMDEPTH) x_fpga_spram (
-  .A                (ram_addr[15:2]  ),
-  .BWEN             (byte_wen_b[3:0] ),
+  //.A                (ram_addr[15:2]  ), // 16 bits address for 64Kbytes
+  .A                (ram_addr[12:2]  ),   // 13 bits address for 8Kbytes
+  .BWEN             (byte_wen_b[3:0] ), 
   .CEN              (mbk_cen_b       ),
   .CLK              (ram_clk         ),
   .D                (ram_wdata[31:0] ),
@@ -759,7 +775,8 @@ wire            sms3_ahb_hready;
 wire    [1 :0]  sms3_ahb_hresp;      
 wire            sms3_idle;           
 wire            sms_big_endian_b;    
-sms_bank_64k_top  x_sms0_top (
+//sms_bank_64k_top  x_sms0_top (
+sms_bank_8k_top  x_sms0_top (
   .big_endian_b                (sms_big_endian_b           ),
   .mem_haddr                   (ahb_sms0_haddr             ),
   .mem_hclk                    (pmu_sms_hclk               ),
@@ -778,7 +795,8 @@ sms_bank_64k_top  x_sms0_top (
   .region_wr_deny_flag         (region_wr_deny_flag0       ),
   .sms_idle0                   (sms0_idle                  )
 );
-sms_bank_64k_top  x_sms1_top (
+// sms_bank_64k_top  x_sms1_top (
+sms_bank_8k_top  x_sms1_top (
   .big_endian_b                (sms_big_endian_b           ),
   .mem_haddr                   (ahb_sms1_haddr             ),
   .mem_hclk                    (pmu_sms_hclk               ),
@@ -797,7 +815,8 @@ sms_bank_64k_top  x_sms1_top (
   .region_wr_deny_flag         (region_wr_deny_flag1       ),
   .sms_idle0                   (sms1_idle                  )
 );
-sms_bank_64k_top  x_sms2_top (
+//sms_bank_64k_top  x_sms2_top (
+sms_bank_8k_top  x_sms2_top (
   .big_endian_b                (sms_big_endian_b           ),
   .mem_haddr                   (ahb_sms2_haddr             ),
   .mem_hclk                    (pmu_sms_hclk               ),
@@ -816,7 +835,8 @@ sms_bank_64k_top  x_sms2_top (
   .region_wr_deny_flag         (region_wr_deny_flag2       ),
   .sms_idle0                   (sms2_idle                  )
 );
-sms_bank_64k_top  x_isram_top (
+//sms_bank_64k_top  x_isram_top (
+sms_bank_8k_top  x_isram_top (
   .big_endian_b                 (sms_big_endian_b            ),
   .mem_haddr                    (ahb_sms3_haddr              ),
   .mem_hclk                     (pmu_sms_hclk                ),
