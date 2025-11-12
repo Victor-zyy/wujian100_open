@@ -97,14 +97,14 @@ module wujian100_open_top(
   PAD_USI2_SCLK,
   PAD_USI2_SD0,
   PAD_USI2_SD1,
-  PIN_EHS,
-  POUT_EHS
+  PIN_EHS
+  //POUT_EHS
 );
 
 
 input           PIN_EHS;               
 
-output          POUT_EHS;              
+//output          POUT_EHS;              
 
 inout           PAD_GPIO_0;            
 inout           PAD_GPIO_1;            
@@ -581,7 +581,16 @@ wire            usi2_wic_intr;
 wire            wdt_pmu_rst_b;         
 wire            wdt_wic_intr;          
 
+wire            clk_20M;
 
+e902_soc_pll x_e902_pll (
+    // Clock out ports
+    .clk_out1(clk_20M),     // output clk_out1
+    // Status and control signals
+    .resetn(PAD_MCURST), // input reset
+   // Clock in ports
+    .clk_in1(PIN_EHS)      // input clk_in1
+);  
 
 aou_top  x_aou_top (
   .apb1_gpio_psel_s5     (apb1_gpio_psel_s5    ),
@@ -1167,11 +1176,9 @@ retu_top  x_retu_top (
 PAD_OSC_IO  x_PAD_EHS (
   .CLK         (ehs_pmu_clk),
   .EN          (1'b1       ),
-  .XOSC_IN     (PIN_EHS    ),
+  .XOSC_IN     (clk_20M    ),
   .XOSC_OUT    (POUT_EHS   )
 );
-
-
 
 
 
