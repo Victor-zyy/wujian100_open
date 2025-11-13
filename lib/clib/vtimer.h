@@ -10,8 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 static int get_vtimer()
 {
-  int *TIMER_ADDR;
-  TIMER_ADDR = 0xE0013000;
+  unsigned int *TIMER_ADDR;
+  TIMER_ADDR = (unsigned int *)0xE0013000;
   volatile unsigned int   LoadCount;
   LoadCount = *TIMER_ADDR;
   return LoadCount;

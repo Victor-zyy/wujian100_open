@@ -7,8 +7,8 @@
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # the compiler toolset setting
-
-TOOL_EXTENSION	= ${TOOL_PATH}/bin/riscv64-unknown-elf-
+FILE=usi_uart_test
+TOOL_EXTENSION=/opt/Xuantie-900-gcc-elf-newlib-x86_64-V2.10.2/bin/riscv64-unknown-elf-
 CC    = ${TOOL_EXTENSION}gcc
 AS    = ${TOOL_EXTENSION}as
 LINK  = ${TOOL_EXTENSION}ld
@@ -23,7 +23,7 @@ CSRC = $(wildcard *.c)
 
 OBJECTS = $(SSRC:%.S=%.o) $(sSRC:%.s=%.o) $(CSRC:%.c=%.o)
 
-
+CPU=e902m
 DEFSYM = $(shell echo ${CPU} | sed 's/\(e9[0-9]\{2\}\).*/\1/')
 CPU_M = $(shell echo ${CPU} | sed '/m/p')
 
@@ -42,6 +42,7 @@ else
   CFLAGS += -O3 -funroll-all-loops -fgcse-sm -finline-limit=500 -fno-schedule-insns -ffunction-sections -fdata-sections
 endif
 
+CFLAGS += -I./clib
 LINKFLAGS =  -Tlinker.lcf -nostartfiles
 
 

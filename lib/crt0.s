@@ -9,7 +9,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 */
 .text
-.ifdef e902
 	.global	__start
 
 __start:
@@ -149,4 +148,3 @@ __dummy:
   
   .data
   .long 0
-.endif
