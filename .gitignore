@@ -8,4 +8,5 @@ lib/*.obj
 lib/*.hex
 lib/*.v
 lib/*.pat
+lib/testbench_dir
 tb/*.pat
