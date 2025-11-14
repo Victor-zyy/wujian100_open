@@ -14,8 +14,8 @@ AS    = ${TOOL_EXTENSION}as
 LINK  = ${TOOL_EXTENSION}ld
 OBJDUMP = ${TOOL_EXTENSION}objdump
 OBJCOPY = ${TOOL_EXTENSION}objcopy
-#CONVERT		=../tools/Srec2vmem
-CONVERT		=../tools/Srec2vmem.py
+CONVERT		=../tools/Srec2vmem
+#CONVERT		=../tools/Srec2vmem.py
 
 SSRC = $(wildcard *.S)
 sSRC = $(wildcard *.s)
@@ -74,14 +74,15 @@ ${FILE}.hex : ${FILE}.elf
 
 %.pat	: %.hex
 	rm -f *.pat
-	#${CONVERT} $< test.pat
-	${CONVERT} -i $< -o test.pat
+	${CONVERT} $< test.pat
+	#${CONVERT} -i $< -o test.pat
 
 
 #--------------------------------------------------------------------
 # target setting
 .PHONY :all
 all : ${FILE}.pat ${FILE}.hex ${FILE}.elf ${FILE}.obj
+	$(shell cp test.pat ../tb)
 
 #---------------------------------------------------------------------
 # clean some medium code and .pat
