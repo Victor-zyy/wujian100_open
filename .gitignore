@@ -1,2 +1,11 @@
 # FPGA
 fpga/vivado/*
+
+# lib garbage stuff
+#
+lib/*.elf
+lib/*.obj
+lib/*.hex
+lib/*.v
+lib/*.pat
+tb/*.pat
