@@ -12,6 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 `define SYNTHESIS
 `define MAX_SIM_TIME 1500000000
+`define NO_DUMP
 
 `timescale 1ns/100ps
 
@@ -22,14 +23,14 @@ module wujian100_open_tb ();
 
 `define CORE_JTG_TCLK_DURATION 500
 
-`define CLKMUX_EHS_CLK_DURATION 25 
+`define CLKMUX_EHS_CLK_DURATION 20 // 50M input 
 
 `define CLKMUX_ELS_CLK_DURATION 15258.789
 
 `ifdef iverilog
   integer FILE;
 `else
-  static integer FILE;
+  integer FILE;
 `endif
 
 reg     [31:0]  cpuclk_counter;           
@@ -240,10 +241,7 @@ wujian100_open_top  x_wujian100_open_top (
   .PAD_USI2_SCLK (PAD_USI2_SCLK),
   .PAD_USI2_SD0  (PAD_USI2_SD0 ),
   .PAD_USI2_SD1  (PAD_USI2_SD1 ),
-  .PIN_EHS       (PIN_EHS      ),
-  .PIN_ELS       (PIN_ELS      ),
-  .POUT_EHS      (POUT_EHS     ),
-  .POUT_ELS      (POUT_ELS     )
+  .PIN_EHS       (PIN_EHS      )
 );
 
 
@@ -252,18 +250,20 @@ wujian100_open_top  x_wujian100_open_top (
 
 //////////////////////program download///////////////////////////////////
 
-
-initial
-begin : load_program
 integer j;
 integer k;
   reg [31:0] one_word;
 `ifdef iverilog
   reg [31:0]  temp_mem[16384];
 `else
-  reg [31:0]  temp_mem[integer];
+  reg [31:0]  temp_mem[0:16383];
 `endif
-  $readmemh("test.pat", temp_mem);
+
+// program is 64KB bank
+initial
+begin : load_program
+
+  $readmemh("/home/zyy/repo/wujian100_open/tb/test.pat", temp_mem);
    @( posedge PI_SOC_RST_B);
  for(k=0; k<32'h4000; k=k+1)
     begin
@@ -275,7 +275,7 @@ integer k;
     end
 end
 
-
+// Load Data is 64Kb * 3banks
 initial
 begin : load_data
   integer j;
@@ -299,6 +299,13 @@ always@(posedge i_ext_pad_clkmux_ehs_clk)
 begin 
   cpuclk_counter[31:0] = cpuclk_counter[31:0] + 1;
 end
+
+//UART TestBench
+//initial
+//begin
+//@(posedge `TB_MODULE.PAD_MCURST);
+//force `TB_MODULE.PAD_USI1_SCLK = `TB_MODULE.PAD_USI0_SD0;
+//end
 
 //max simultion time monitor
 initial
