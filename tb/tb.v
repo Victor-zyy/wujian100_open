@@ -17,7 +17,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 //`define GPIO_TESTBENCH
 //`define UART_TESTBENCH
-
+`define PWM_TESTBENCH
 
 `timescale 1ns/100ps
 
@@ -28,7 +28,7 @@ module wujian100_open_tb ();
 
 `define CORE_JTG_TCLK_DURATION 500
 
-`define CLKMUX_EHS_CLK_DURATION 20 // 50M input 
+`define CLKMUX_EHS_CLK_DURATION 10 // 50M input 
 
 `define CLKMUX_ELS_CLK_DURATION 15258.789
 
@@ -80,19 +80,19 @@ wire            PAD_GPIO_7;
 wire            PAD_JTAG_TCLK;            
 wire            PAD_JTAG_TMS;             
 wire            PAD_MCURST;               
-//wire            PAD_PWM_CH0;              
-//wire            PAD_PWM_CH1;              
-//wire            PAD_PWM_CH10;             
-//wire            PAD_PWM_CH11;             
-//wire            PAD_PWM_CH2;              
-//wire            PAD_PWM_CH3;              
-//wire            PAD_PWM_CH4;              
-//wire            PAD_PWM_CH5;              
-//wire            PAD_PWM_CH6;              
-//wire            PAD_PWM_CH7;              
-//wire            PAD_PWM_CH8;              
-//wire            PAD_PWM_CH9;              
-//wire            PAD_PWM_FAULT;            
+wire            PAD_PWM_CH0;              
+wire            PAD_PWM_CH1;              
+wire            PAD_PWM_CH10;             
+wire            PAD_PWM_CH11;             
+wire            PAD_PWM_CH2;              
+wire            PAD_PWM_CH3;              
+wire            PAD_PWM_CH4;              
+wire            PAD_PWM_CH5;              
+wire            PAD_PWM_CH6;              
+wire            PAD_PWM_CH7;              
+wire            PAD_PWM_CH8;              
+wire            PAD_PWM_CH9;              
+wire            PAD_PWM_FAULT;            
 wire            PAD_USI0_NSS;             
 wire            PAD_USI0_SCLK;            
 wire            PAD_USI0_SD0;             
@@ -221,19 +221,19 @@ wujian100_open_top  x_wujian100_open_top (
   .PAD_JTAG_TCLK (PAD_JTAG_TCLK),
   .PAD_JTAG_TMS  (PAD_JTAG_TMS ),
   .PAD_MCURST    (PAD_MCURST   ),
-//  .PAD_PWM_CH0   (PAD_PWM_CH0  ),
-//  .PAD_PWM_CH1   (PAD_PWM_CH1  ),
-//  .PAD_PWM_CH10  (PAD_PWM_CH10 ),
-//  .PAD_PWM_CH11  (PAD_PWM_CH11 ),
-//  .PAD_PWM_CH2   (PAD_PWM_CH2  ),
-//  .PAD_PWM_CH3   (PAD_PWM_CH3  ),
-//  .PAD_PWM_CH4   (PAD_PWM_CH4  ),
-//  .PAD_PWM_CH5   (PAD_PWM_CH5  ),
-//  .PAD_PWM_CH6   (PAD_PWM_CH6  ),
-//  .PAD_PWM_CH7   (PAD_PWM_CH7  ),
-//  .PAD_PWM_CH8   (PAD_PWM_CH8  ),
-//  .PAD_PWM_CH9   (PAD_PWM_CH9  ),
-//  .PAD_PWM_FAULT (PAD_PWM_FAULT),
+  .PAD_PWM_CH0   (PAD_PWM_CH0  ),
+  .PAD_PWM_CH1   (PAD_PWM_CH1  ),
+  .PAD_PWM_CH10  (PAD_PWM_CH10 ),
+  .PAD_PWM_CH11  (PAD_PWM_CH11 ),
+  .PAD_PWM_CH2   (PAD_PWM_CH2  ),
+  .PAD_PWM_CH3   (PAD_PWM_CH3  ),
+  .PAD_PWM_CH4   (PAD_PWM_CH4  ),
+  .PAD_PWM_CH5   (PAD_PWM_CH5  ),
+  .PAD_PWM_CH6   (PAD_PWM_CH6  ),
+  .PAD_PWM_CH7   (PAD_PWM_CH7  ),
+  .PAD_PWM_CH8   (PAD_PWM_CH8  ),
+  .PAD_PWM_CH9   (PAD_PWM_CH9  ),
+  .PAD_PWM_FAULT (PAD_PWM_FAULT),
   .PAD_USI0_NSS  (PAD_USI0_NSS ),
   .PAD_USI0_SCLK (PAD_USI0_SCLK),
   .PAD_USI0_SD0  (PAD_USI0_SD0 ),
