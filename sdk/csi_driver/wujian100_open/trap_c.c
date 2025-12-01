@@ -25,6 +25,7 @@ void trap_c(uint32_t *regs)
 
     vec = __get_MCAUSE() & 0x3FF;
 
+#if 0
     printf("CPU Exception: NO.%d", vec);
     printf("\n");
 
@@ -39,7 +40,7 @@ void trap_c(uint32_t *regs)
     printf("\n");
     printf("mepc   : %08x\n", regs[15]);
     printf("mstatus: %08x\n", regs[16]);
-
+#endif
     if (trap_c_callback) {
         trap_c_callback();
     }

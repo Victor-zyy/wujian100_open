@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 #ifndef IHS_VALUE
-#define  IHS_VALUE    (20000000)
+#define  IHS_VALUE    (20000000) // 20 MHz
 #endif
 
 #ifndef EHS_VALUE

@@ -67,7 +67,15 @@ struct mm_heap_s g_mmheap;
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
-
+//memset(heap->mm_nodelist, 0, sizeof(struct mm_freenode_s) * MM_NNODES);
+void *memset(void *s, int c, size_t n)
+{
+    char * s_ = s;
+    while( n-- > 0 ){
+        *s_++ = c;
+    }
+    return s_;
+}
 /****************************************************************************
  * Name: mm_addregion
  *

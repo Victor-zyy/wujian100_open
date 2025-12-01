@@ -404,7 +404,6 @@ int32_t csi_pwm_config(pwm_handle_t handle, uint8_t channel, uint32_t period_us,
 void csi_pwm_start(pwm_handle_t handle, uint8_t channel)
 {
     PWM_NULL_PARAM_CHK_NORETVAL(handle);
-
     wj_pwm_priv_t *pwm_priv = handle;
     wj_pwm_reg_t *addr = (wj_pwm_reg_t *)(pwm_priv->base);
 
@@ -479,6 +478,8 @@ void wj_pwm_irqhandler(int32_t idx)
     wj_pwm_reg_t *addr = (wj_pwm_reg_t *)(pwm_priv->base);
     uint32_t capis = addr->CAPIS;
     uint32_t timis = addr->TIMIS;
+    uint32_t pwmris1 = addr->PWMRIS1;
+    uint32_t pwmris2 = addr->PWMRIS2;
 
     for (i = 0; i < CONFIG_PER_PWM_CHANNEL_NUM/2; i++) {
         if (timis & (0x1 << i)) {
@@ -535,7 +536,23 @@ void wj_pwm_irqhandler(int32_t idx)
 
             continue;
         }
+        
     }
+
+    // load = counter irq 
+    // PWM01 --- i = 0  ch00 ch01
+    // PWM01 --- i = 1  ch02 ch03
+    // PWM02 --- i = 2  ch04 ch05
+    for( int i = 0; i < 3; i++ ){
+        if (pwmris1 & (0x200 << 8 * i)) {
+            addr->PWMIC1 |= 0x200 << 8 * i;
+            pwm_event_cb_t cb = pwm_priv->pwm_event_cb[i << 1];
+            if (cb) {
+                cb( i, 0, 0 );
+            }
+        }
+    }
+
 }
 
 /**
@@ -853,4 +870,44 @@ void drv_pwm_timer_get_load_value(pwm_handle_t handle, uint8_t channel, uint32_t
     }
 
     *value = (uint32_t)load;
+}
+
+
+
+/**
+  \brief       enable PWM interrupt
+  \param[in]   handle pwm handle to operate.
+  \param[in]   channel  channel num.
+  \return      \ref execution_status
+*/
+void csi_pwm_interrupt_enable(pwm_handle_t handle, uint8_t channel)
+{
+    PWM_NULL_PARAM_CHK_NORETVAL(handle);
+
+    wj_pwm_priv_t *pwm_priv = handle;
+    wj_pwm_reg_t *addr = (wj_pwm_reg_t *)(pwm_priv->base);
+
+    if (channel == WJENUM_PWM_CH0 || channel == WJENUM_PWM_CH1) {
+        addr->PWMINTEN1 = 0x00000200; /* PWM0 output enable */
+    }
+
+    if (channel == WJENUM_PWM_CH2 || channel == WJENUM_PWM_CH3) {
+                /* PWM1 output enable */
+    }
+
+    if (channel == WJENUM_PWM_CH4 || channel == WJENUM_PWM_CH5) {
+                /* PWM2 output enable */
+    }
+
+    if (channel == WJENUM_PWM_CH6 || channel == WJENUM_PWM_CH7) {
+                /* PWM3 output enable */
+    }
+
+    if (channel == WJENUM_PWM_CH8 || channel == WJENUM_PWM_CH9) {
+                /* PWM4 output enable */
+    }
+
+    if (channel == WJENUM_PWM_CH10 || channel == WJENUM_PWM_CH11) {
+                /* PWM5 output enable */
+    }
 }

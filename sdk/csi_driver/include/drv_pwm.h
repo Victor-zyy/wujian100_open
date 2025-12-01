@@ -185,6 +185,12 @@ void drv_pwm_capture_start(pwm_handle_t handle, uint8_t channel);
 */
 void drv_pwm_capture_stop(pwm_handle_t handle, uint8_t channel);
 
+/**
+  \brief       enable PWM interrupt.
+  \param[in]   handle   pwm handle to operate.
+  \param[in]   channel  channel num.
+*/
+void csi_pwm_interrupt_enable(pwm_handle_t handle, uint8_t channel);
 #ifdef __cplusplus
 }
 #endif
